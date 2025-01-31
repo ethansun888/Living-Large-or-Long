@@ -1,0 +1,57 @@
+import numpy as np
+import scipy.stats as stats
+import matplotlib.pyplot as plt
+from scipy.special import gamma
+
+# Sample data (replace this with your VSL data)
+data = [1.734800268,
+2.463770858,
+3.299151138,
+4.158429987,
+3.714513514,
+8.280783258,
+8.18417538,
+11.29312529,
+11.96557801,
+9.918975647,
+11.32920347,
+12.14818203,
+12.23637025,
+14.05832313,
+22.7887266,
+29.0122822,
+18.21287057,
+22.20981484,
+27.87114019,
+51.97314733,
+24.31911347,
+22.81772587,
+31.4647011,
+36.09297308,
+36.05722858,
+45.04382102]
+
+# Estimate the Weibull parameters (shape and scale) using the Maximum Likelihood Estimation (MLE)
+shape, loc, scale = stats.weibull_min.fit(data, floc=0)
+
+# Print the estimated parameters
+print(f"Estimated Shape Parameter: {shape}")
+print(f"Estimated Scale Parameter: {scale}")
+print(f"Location Parameter (fixed at 0): {loc}")
+
+# Calculate the mean of the Weibull distribution
+mean_weibull = scale * gamma(1 + 1 / shape)
+print(f"Mean of the Weibull Distribution: {mean_weibull:.2f}")
+
+# Generate Weibull distribution using the estimated parameters
+x = np.linspace(min(data), max(data), 1000)
+pdf = stats.weibull_min.pdf(x, shape, loc, scale)
+
+# Plot the histogram and the estimated Weibull distribution
+plt.hist(data, bins=15, density=True, alpha=0.6, color='g', label='Data Histogram')
+plt.plot(x, pdf, 'r-', label=f'Weibull Fit (shape={shape:.2f}, scale={scale:.2f})')
+plt.title("Weibull Distribution Fit")
+plt.xlabel("Data")
+plt.ylabel("Density")
+plt.legend()
+plt.show()
